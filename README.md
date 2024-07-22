@@ -1,13 +1,6 @@
 # ChaoXingServerSeat
 超星图书馆座位预约脚本
 
-（由于部分学校新增了点选式行为验证码导致原本的程序会显示验证失败，详细参见issue21[https://github.com/bear-zd/ChaoXingReserveSeat/issues/21]）
-
-## 注意
-
-使用python消除了对js的依赖，请拉取最新版程序运行。
-
-该版本试验性支持滑块验证，目前已经过测试可以使用，如果有滑块验证，请参考下面的**高级设置**部分
 
 ## 如何使用
 
@@ -21,7 +14,7 @@
 pip install cryptography
 ```
 
-如果有滑块验证，则需要额外安装numpy和opencv-python
+如果有滑块验证，则需要额外安装numpy和opencv-python (由于不同院校图书馆的验证方式有所不同，目前没有通解，目前支持得验证方式只有滑块验证，如有相应需求请在issue中提出或者自己编写`customed_reserve.py`来帮助更多同学)
 
 ```bash
 pip install numpy, opencv-python

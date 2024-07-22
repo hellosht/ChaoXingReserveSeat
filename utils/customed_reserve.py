@@ -5,6 +5,7 @@ import time
 import datetime
 
 class customedreserve(slidereserve):
+    name = "custom"
     def __init__(self, sleep_time=0.2, max_attempt=50, reserve_next_day=False):
         super().__init__(sleep_time=sleep_time, max_attempt=max_attempt, reserve_next_day=reserve_next_day)
         self.url = "https://office.chaoxing.com/front/apps/seatengine/select?id={}&day={}&backLevel=2&seatId=953"
