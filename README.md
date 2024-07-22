@@ -99,7 +99,7 @@ xxxxxxx,xxxxxxx
 SLEEPTIME = 0.2 # 每次抢座的间隔
 ENDTIME = "07:01:00" # 根据学校的开始预约座位时间+1min即可
 
-ENABLE_SLIDER = False # 是否有滑块验证，设置为True开启滑块验证
+reserve = CAPTCHA_METHOD["custom"]# default无验证方式，slider为滑块验证方式，custom为自定义验证方式
 MAX_ATTEMPT = 4 # 最大尝试次数
 ```
 可以直接进行修改，但是不建议把**SLEEPTIME**设置太小。
