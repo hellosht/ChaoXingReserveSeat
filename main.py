@@ -115,4 +115,4 @@ if __name__ == "__main__":
                 usersdata[idx][key] = action_usernames[idx]
             if key == "password" and args.action:
                 usersdata[idx][key] = action_passwords[idx]
-    func_dict[args.method](usersdata)
+    func_dict[args.method](usersdata, args.action)

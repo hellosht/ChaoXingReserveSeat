@@ -9,7 +9,7 @@ def _fetch_env_variables(env_name, action):
         return os.environ[env_name] if action else ""
     except KeyError:
         print(f"Environment variable {env_name} is not configured correctly.")
-        return None
+        exit()
 
 def get_user_credentials(action):
     usernames = _fetch_env_variables('USERNAMES', action)
