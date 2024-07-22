@@ -47,26 +47,23 @@ def login_and_reserve(users, usernames, passwords, action, success_list=None):
             success_list[index] = suc
     return success_list
 
-
 def main(users, action=False):
     current_time = get_current_time(action)
     logging.info(f"start time {current_time}, action {'on' if action else 'off'}")
     attempt_times = 0
+    usernames, passwords = None, None
+    success_list = []
     if action:
         usernames, passwords = get_user_credentials(action)
-    success_list = None
     current_dayofweek = get_current_dayofweek(action)
     today_reservation_num = sum(1 for d in users if current_dayofweek in d.get('daysofweek'))
     while current_time < ENDTIME:
         attempt_times += 1
-        # try:
         success_list = login_and_reserve(users, usernames, passwords, action, success_list)
-        # except Exception as e:
-        #     print(f"An error occurred: {e}")
         print(f"attempt time {attempt_times}, time now {current_time}, success list {success_list}")
         current_time = get_current_time(action)
         if sum(success_list) == today_reservation_num:
-            print(f"reserved successfully!")
+            print("reserved successfully!")
             return
 
 def debug(users, action=False):
