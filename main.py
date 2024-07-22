@@ -23,18 +23,12 @@ RESERVE_NEXT_DAY = False # 预约明天而不是今天的
 
                 
 
-def login_and_reserve(users, usernames, passwords, action, success_list=None):
-    logging.info(f"Global settings: \nSLEEPTIME: {SLEEPTIME}\nENDTIME: {ENDTIME}\n CAPTCHA: {reserve.name}\nRESERVE_NEXT_DAY: {RESERVE_NEXT_DAY}")
-    if action and len(usernames.split(",")) != len(users):
-        raise Exception("user number should match the number of config")
-    if success_list is None:
-        success_list = [False] * len(users)
+def login_and_reserve(users, action, success_list):
+    logging.info(f"Global settings: \nSLEEPTIME: {SLEEPTIME}\nENDTIME: {ENDTIME}\nCAPTCHA: {reserve.name}\nRESERVE_NEXT_DAY: {RESERVE_NEXT_DAY}")
     current_dayofweek = get_current_dayofweek(action)
     for index, user in enumerate(users):
         username, password, times, roomid, seatid, daysofweek = user.values()
-        if action:
-            username, password = usernames.split(',')[index], passwords.split(',')[index]
-        if(current_dayofweek not in daysofweek):
+        if current_dayofweek not in daysofweek:
             logging.info("Today not set to reserve")
             continue
         if not success_list[index]: 
@@ -51,16 +45,13 @@ def main(users, action=False):
     current_time = get_current_time(action)
     logging.info(f"start time {current_time}, action {'on' if action else 'off'}")
     attempt_times = 0
-    usernames, passwords = None, None
-    success_list = []
-    if action:
-        usernames, passwords = get_user_credentials(action)
+    success_list = [False] * len(users)
     current_dayofweek = get_current_dayofweek(action)
     today_reservation_num = sum(1 for d in users if current_dayofweek in d.get('daysofweek'))
     while current_time < ENDTIME:
         attempt_times += 1
-        success_list = login_and_reserve(users, usernames, passwords, action, success_list)
-        print(f"attempt time {attempt_times}, time now {current_time}, success list {success_list}")
+        success_list = login_and_reserve(users, action, success_list)
+        print(f"attempt time {attempt_times}, time now {current_time}, success list {success_list}") 
         current_time = get_current_time(action)
         if sum(success_list) == today_reservation_num:
             print("reserved successfully!")
@@ -68,22 +59,17 @@ def main(users, action=False):
 
 def debug(users, action=False):
     logging.info(f"Global settings: \nSLEEPTIME: {SLEEPTIME}\nENDTIME: {ENDTIME}\nCAPTCHA: {reserve.name}\nRESERVE_NEXT_DAY: {RESERVE_NEXT_DAY}")
-    suc = False
-    logging.info(f" Debug Mode start! , action {'on' if action else 'off'}")
-    if action:
-        usernames, passwords = get_user_credentials(action)
+    logging.info(f"Debug Mode start! , action {'on' if action else 'off'}")
     current_dayofweek = get_current_dayofweek(action)
-    for index, user in enumerate(users):
+    for idx, user in enumerate(users):
         username, password, times, roomid, seatid, daysofweek = user.values()
-        if type(seatid) == str:
+        if isinstance(seatid, str):
             seatid = [seatid]
-        if action:
-            username ,password = usernames.split(',')[index], passwords.split(',')[index]
-        if(current_dayofweek not in daysofweek):
+        if current_dayofweek not in daysofweek:
             logging.info("Today not set to reserve")
             continue
         logging.info(f"----------- {username} -- {times} -- {seatid} try -----------")
-        s = reserve(sleep_time=SLEEPTIME,  max_attempt=MAX_ATTEMPT)
+        s = reserve(sleep_time=SLEEPTIME, max_attempt=MAX_ATTEMPT)
         s.get_login_status()
         s.login(username, password)
         s.requests.headers.update({'Host': 'office.chaoxing.com'})
@@ -91,7 +77,7 @@ def debug(users, action=False):
         if suc:
             return
 
-def get_roomid(args1, args2):
+def get_roomid(**kwargs):
     username = input("请输入用户名：")
     password = input("请输入密码：")
     s = reserve(sleep_time=SLEEPTIME, max_attempt=MAX_ATTEMPT, reserve_next_day=RESERVE_NEXT_DAY)
@@ -106,10 +92,27 @@ if __name__ == "__main__":
     config_path = os.path.join(os.path.dirname(__file__), 'config.json')
     parser = argparse.ArgumentParser(prog='Chao Xing seat auto reserve')
     parser.add_argument('-u','--user', default=config_path, help='user config file')
-    parser.add_argument('-m','--method', default="reserve" ,choices=["reserve", "debug", "room"], help='for debug')
+    parser.add_argument('-m','--method', default="reserve" ,choices=["reserve", "debug"], help='for debug')
     parser.add_argument('-a','--action', action="store_true",help='use --action to enable in github action')
     args = parser.parse_args()
-    func_dict = {"reserve": main, "debug":debug, "room": get_roomid}
+    func_dict = {"reserve": main, "debug":debug}
     with open(args.user, "r+") as data:
         usersdata = json.load(data)["reserve"]
-    func_dict[args.method](usersdata, args.action)
+    if args.action:
+        action_usernames, action_passwords = get_user_credentials(args.action)
+        action_usernames = action_usernames.split(",")
+        action_passwords = action_passwords.split(",")
+        len_action_user = len(action_usernames)
+        if len_action_user != len(action_usernames):
+            logging.error("action user set length not match config.json user length!")
+            exit()
+    for idx, user in enumerate(usersdata):
+        for key in ["username","password","time","roomid","seatid","daysofweek"]:
+            if user.get(key, None) is None:
+                logging.error(f"Key {key} of {idx}-th user not set correct!")
+                exit()
+            if key == "username" and args.action:
+                usersdata[idx][key] = action_usernames[idx]
+            if key == "password" and args.action:
+                usersdata[idx][key] = action_passwords[idx]
+    func_dict[args.method](usersdata)
