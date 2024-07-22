@@ -5,8 +5,7 @@ import json
 import time
 from utils import generate_captcha_key
 
-class slidereserve(reserve):
-    name = "slider"
+class clickreserve(reserve):
     def __init__(self, sleep_time=0.2, max_attempt=50, reserve_next_day=False):
         super().__init__(sleep_time=sleep_time, max_attempt=max_attempt, reserve_next_day=reserve_next_day)
 
