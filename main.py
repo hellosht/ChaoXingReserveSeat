@@ -19,7 +19,7 @@ ENDTIME = "07:01:00" # 根据学校的预约座位时间+1min即可
 CAPTCHA_METHOD = {"default":reserve, "slider":slidereserve, "custom":customedreserve} # default无验证方式，slider为滑块验证方式，custom为自定义验证方式
 reserve = CAPTCHA_METHOD["custom"]
 MAX_ATTEMPT = 5 # 最大尝试次数
-RESERVE_NEXT_DAY = False # 预约明天而不是今天的
+RESERVE_NEXT_DAY = False # False表示预约今天的,True表示预约明天的
 
                 
 
