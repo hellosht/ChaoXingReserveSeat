@@ -1,6 +1,8 @@
 import os 
 from .encrypt import AES_Encrypt, generate_captcha_key, enc
 from .reserve import reserve
+from .slide_reserve import slidereserve
+from .customed_reserve import customedreserve  
 
 def _fetch_env_variables(env_name, action):
     try:
