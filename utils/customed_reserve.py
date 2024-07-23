@@ -8,11 +8,23 @@ class customedreserve(slidereserve):
     name = "custom"
     def __init__(self, sleep_time=0.2, max_attempt=50, reserve_next_day=False):
         super().__init__(sleep_time=sleep_time, max_attempt=max_attempt, reserve_next_day=reserve_next_day)
-        self.url = "https://office.chaoxing.com/front/apps/seatengine/select?id={}&day={}&backLevel=2&seatId=953"
-        self.submit_url = "https://office.chaoxing.com/data/apps/seatengine/submit"
+        
+        '''
+        for some school with https://office.chaoxing.com/front/apps/seatengine url prefix. **Please modify seatId**
+        eg: 中国矿业大学
+        '''
+        # self.url = "https://office.chaoxing.com/front/apps/seatengine/select?id={}&day={}&backLevel=2&seatId=xxx"
+        # self.submit_url = "https://office.chaoxing.com/data/apps/seatengine/submit"
+
+        '''
+        for some school with https://reserve.chaoxing.com/front/third/apps/seat/select url prefix. **Please modify pageToken**
+        eg: 黄山学院
+        self.url = "https://reserve.chaoxing.com/front/third/apps/seat/select?deptIdEnc=ab9abb08fee54ec6&id={}&day={}&backLevel=2&pageToken=xxx"
+        self.submit_url = "https://reserve.chaoxing.com/data/apps/seat/submit?"
+        '''
 
     def _get_page_token(self, url):
-        print(url)
+        logging.info(url)
         response = self.requests.get(url=url, verify=False)
         html = response.content.decode('utf-8')
         token = re.findall(r"token = '([^']*)'", html)[0] if re.findall(r"token = '([^']*)'", html) else ""
