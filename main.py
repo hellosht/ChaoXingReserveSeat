@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-from utils import reserve, get_user_credentials, customedreserve, slidereserve
+from utils import *
 get_current_time = lambda action: time.strftime("%H:%M:%S", time.localtime(time.time() + 8*3600)) if action else time.strftime("%H:%M:%S", time.localtime(time.time()))
 get_current_dayofweek = lambda action: time.strftime("%A", time.localtime(time.time() + 8*3600)) if action else time.strftime("%A", time.localtime(time.time()))
 
@@ -16,7 +16,7 @@ SLEEPTIME = 0.2 # 每次抢座的间隔
 ENDTIME = "07:01:00" # 根据学校的预约座位时间+1min即可
 
 # ENABLE_SLIDER = False # 是否有滑块验证
-CAPTCHA_METHOD = {"default":reserve, "slider":slidereserve, "custom":customedreserve} # default无验证方式，slider为滑块验证方式，custom为自定义验证方式
+CAPTCHA_METHOD = {"default":reserve, "slider":slidereserve, "custom":huangshancustomedreserve} # default无验证方式，slider为滑块验证方式，custom为自定义验证方式
 reserve = CAPTCHA_METHOD["custom"]
 MAX_ATTEMPT = 5 # 最大尝试次数
 RESERVE_NEXT_DAY = False # False表示预约今天的,True表示预约明天的
