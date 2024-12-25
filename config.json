@@ -1,11 +1,17 @@
 {
     "reserve": [
-        {"username": "xxxxxxxxxx",
-        "password": "xxxxxxxxx",
+        {"username": "1", //https://passport2.chaoxing.com/mlogin?loginType=1&newversion=true&fid=&  在这个网站查看是否可以顺利登陆 
+        "password": "1",
         "time": ["21:00","22:00"],
-        "roomid":"3993",
-        "seatid":["111"],
+        "roomid":"9808",
+        "seatid":["047"],
         "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday"]
+        }，
+        {"username": "1",
+        "password": "1",
+        "time": ["20:00","21:00"],
+        "roomid":"9808",
+        "seatid":["047"],
+        "daysofweek": ["Saturday" , "Sunday"]
     }
-    ]
 }
